@@ -28,7 +28,7 @@ Output: The bot sends the top 10 news stories, including titles, links, and publ
 
 1. Clone this repository:
     ```shell
-    git clone https://github.com/Makonmm/Discord-Scrapping-Bot
+    git clone https://github.com/Makonmm/Discord-Scraping-Bot
 
     ```
 2. Install dependecies:

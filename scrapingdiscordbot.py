@@ -3,6 +3,7 @@ import logging
 import requests
 from bs4 import BeautifulSoup
 
+# Configurações do bot
 TOKEN = ''
 
 intents = discord.Intents.default()
@@ -13,10 +14,19 @@ intents.message_content = True
 client = discord.Client(intents=intents)
 
 
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1',
+}
+
+
 def fetch_html_economy():
     url = 'https://economia.uol.com.br/cotacoes/'
     try:
-        response = requests.get(url)
+        response = requests.get(url, headers=headers)
         response.raise_for_status()
         return response.text
     except requests.RequestException as e:
@@ -27,11 +37,11 @@ def fetch_html_economy():
 def fetch_html_news():
     url = 'https://g1.globo.com/'
     try:
-        response = requests.get(url)
+        response = requests.get(url, headers=headers)
         response.raise_for_status()
         return response.text
     except requests.RequestException as e:
-        print(f"Error", {e})
+        print(f"Error: {e}")
         return None
 
 
@@ -63,8 +73,10 @@ def find_commodities(html_content):
         cells = table.find_all('td')
         for cell in cells:
             commodities_text = cell.get_text(strip=True)
-            if "Fonte" not in commodities_text:
+            if "Fonte" not in commodities_text and "DE 2024" not in commodities_text:
                 commodities.append(commodities_text)
+
+    commodities = commodities[12:]
 
     grouped_commodities = [commodities[i:i + 2]
                            for i in range(0, len(commodities), 2)]
